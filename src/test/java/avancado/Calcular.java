@@ -1,5 +1,6 @@
 package avancado;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
@@ -16,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,11 +27,15 @@ public class Calcular {
     private AndroidDriver<MobileElement> driver;
     private DesiredCapabilities desiredCapabilities;
     private URL remoteUrl;
+    private static String nomePasta = new SimpleDateFormat("yyyy-MM-dd HH-mm").format(Calendar.getInstance().getTime());
+
 
     // Funções ou Métodos de Apoio
     public void print(String nomePrint) throws IOException {
         File foto = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        FileUtils.copyFile(foto, new File("target/" + nomePrint + ".png"));
+        System.out.println("nomePasta: " + nomePasta);
+        FileUtils.copyFile(foto, new File("target/" + nomePasta + "/" + nomePrint + ".png"));
+
 
     }
 
@@ -97,19 +104,19 @@ public class Calcular {
 
     @When("^seleciono \"([^\"]*)\" mais \"([^\"]*)\" e pressiono o botao Igual$")
     public void selecionoMaisEPressionoOBotaoIgual(String num1, String num2) throws IOException {
-        print("Somar Dois Numeros Positivo - Passo 1 - Abriu a Calculadora");
+        print("Somar Dois Numeros Positivos - Passo 1 - Abriu a Calculadora");
         MobileElement btnA = (MobileElement) driver.findElementById("com.google.android.calculator:id/digit_" + num1);
         btnA.click();
-        print("Somar Dois Numeros Positivo - Passo 2 - Clicou no botão " + num1);
+        print("Somar Dois Numeros Positivos - Passo 2 - Clicou no botão " + num1);
         MobileElement btnSoma = (MobileElement) driver.findElementByAccessibilityId("plus");
         btnSoma.click();
-        print("Somar Dois Numeros Positivo - Passo 3 - Clicou no botão de soma");
+        print("Somar Dois Numeros Positivos - Passo 3 - Clicou no botão de soma");
         MobileElement btnB = (MobileElement) driver.findElementById("com.google.android.calculator:id/digit_" + num2);
         btnB.click();
-        print("Somar Dois Numeros Positivo - Passo 4 - Clicou no botão " + num2);
+        print("Somar Dois Numeros Positivos - Passo 4 - Clicou no botão " + num2);
         MobileElement btnIgual = (MobileElement) driver.findElementByAccessibilityId("equals");
         btnIgual.click();
-        print("Somar Dois Numeros Positivo - Passo 5 - Clicou no botão Igual");
+        print("Somar Dois Numeros Positivos - Passo 5 - Clicou no botão Igual");
 
     }
 
@@ -117,5 +124,56 @@ public class Calcular {
     public void exibeOResultadoComo(String resultadoEsperado) {
         MobileElement lblResultadoAtual = (MobileElement) driver.findElementById("com.google.android.calculator:id/result_final");
         assertEquals(resultadoEsperado, lblResultadoAtual.getText());
+    }
+
+    @When("^seleciono \"([^\"]*)\" menos \"([^\"]*)\" e pressiono o botao Igual$")
+    public void selecionoMenosEPressionoOBotaoIgual(String num1, String num2) throws IOException{
+        print("Diminuir Dois Numeros Positivos - Passo 1 - Abriu a Calculadora");
+        MobileElement btnA = (MobileElement) driver.findElementById("com.google.android.calculator:id/digit_" + num1);
+        btnA.click();
+        print("Diminuir Dois Numeros Positivos - Passo 2 - Clicou no botão " + num1);
+        MobileElement btnMenos = (MobileElement) driver.findElementByAccessibilityId("minus");
+        btnMenos.click();
+        print("Diminuir Dois Numeros Positivos - Passo 3 - Clicou no botão de menos");
+        MobileElement btnB = (MobileElement) driver.findElementById("com.google.android.calculator:id/digit_" + num2);
+        btnB.click();
+        print("Diminuir Dois Numeros Positivos - Passo 4 - Clicou no botão " + num2);
+        MobileElement btnIgual = (MobileElement) driver.findElementByAccessibilityId("equals");
+        btnIgual.click();
+        print("Diminuir Dois Numeros Positivos - Passo 5 - Clicou no botão Igual");
+    }
+
+    @When("^seleciono \"([^\"]*)\" dividido \"([^\"]*)\" e pressiono o botao Igual$")
+    public void selecionoDivididoEPressionoOBotaoIgual(String num1, String num2) throws IOException{
+        print("Dividir um Numero Positivo - Passo 1 - Abriu a Calculadora");
+        MobileElement btnA = (MobileElement) driver.findElementById("com.google.android.calculator:id/digit_" + num1);
+        btnA.click();
+        print("Dividir um Numero Positivo - Passo 2 - Clicou no botão " + num1);
+        MobileElement btnDividir = (MobileElement) driver.findElementByAccessibilityId("divide");
+        btnDividir.click();
+        print("Dividir um Numero Positivo - Passo 3 - Clicou no botão de dividir");
+        MobileElement btnB = (MobileElement) driver.findElementById("com.google.android.calculator:id/digit_" + num2);
+        btnB.click();
+        print("Dividir um Numero Positivo - Passo 4 - Clicou no botão " + num2);
+        MobileElement btnIgual = (MobileElement) driver.findElementByAccessibilityId("equals");
+        btnIgual.click();
+        print("Dividir um Numero Positivo - Passo 5 - Clicou no botão Igual");
+    }
+
+    @When("^seleciono \"([^\"]*)\" vezes \"([^\"]*)\" e pressiono o botao Igual$")
+    public void selecionoVezesEPressionoOBotaoIgual(String num1, String num2) throws IOException{
+        print("Multiplicar Dois Numeros Inteiros Positivos - Passo 1 - Abriu a Calculadora");
+        MobileElement btnA = (MobileElement) driver.findElementById("com.google.android.calculator:id/digit_" + num1);
+        btnA.click();
+        print("Multiplicar Dois Numeros Inteiros Positivos - Passo 2 - Clicou no botão " + num1);
+        MobileElement btnMultiplicar = (MobileElement) driver.findElementByAccessibilityId("multiply");
+        btnMultiplicar.click();
+        print("Multiplicar Dois Numeros Inteiros Positivos - Passo 3 - Clicou no botão de multiplicar");
+        MobileElement btnB = (MobileElement) driver.findElementById("com.google.android.calculator:id/digit_" + num2);
+        btnB.click();
+        print("Multiplicar Dois Numeros Inteiros Positivos - Passo 4 - Clicou no botão " + num2);
+        MobileElement btnIgual = (MobileElement) driver.findElementByAccessibilityId("equals");
+        btnIgual.click();
+        print("Multiplicar Dois Numeros Inteiros Positivos - Passo 5 - Clicou no botão Igual");
     }
 }
