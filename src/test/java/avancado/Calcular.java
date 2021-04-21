@@ -1,6 +1,7 @@
+//Pacote
 package avancado;
 
-import cucumber.api.PendingException;
+//Bibliotecas
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
@@ -22,13 +23,15 @@ import java.util.Calendar;
 
 import static org.junit.Assert.assertEquals;
 
+
 public class Calcular {
 
+    private MobileElement btnOperacao;
     private AndroidDriver<MobileElement> driver;
     private DesiredCapabilities desiredCapabilities;
     private URL remoteUrl;
     private static String nomePasta = new SimpleDateFormat("yyyy-MM-dd HH-mm").format(Calendar.getInstance().getTime());
-
+    private Massa massa;
 
     // Funções ou Métodos de Apoio
     public void print(String nomePrint) throws IOException {
@@ -175,5 +178,103 @@ public class Calcular {
         MobileElement btnIgual = (MobileElement) driver.findElementByAccessibilityId("equals");
         btnIgual.click();
         print("Multiplicar Dois Numeros Inteiros Positivos - Passo 5 - Clicou no botão Igual");
+    }
+
+
+    // Given com massa
+    @Given("^que utilizo a massa \"([^\"]*)\" para testar a calculadora$")
+    public void queUtilizoAMassaParaTestarACalculadora(String nomeMassa) throws MalformedURLException {
+
+        //Configurações para execução do emulador na nuvem
+        desiredCapabilities.setCapability("platformName", "Android");
+        desiredCapabilities.setCapability("platformVersion", "9.0");
+        desiredCapabilities.setCapability("browserName", "");
+        desiredCapabilities.setCapability("appiumVersion", "1.19.2");
+        desiredCapabilities.setCapability("deviceName", massa.deviceName);
+        desiredCapabilities.setCapability("deviceOrientation", "portrait");
+        desiredCapabilities.setCapability("app", "storage:filename=Calculator_v7.8 (271241277)_apkpure.com.apk");
+        desiredCapabilities.setCapability("appPackage", "com.google.android.calculator");
+        desiredCapabilities.setCapability("appActivity", "com.android.calculator2.Calculator");
+        desiredCapabilities.setCapability("ensureWebviewsHavePages", true);
+        desiredCapabilities.setCapability("SAUCE_USERNAME", "marilia.laviola");
+        desiredCapabilities.setCapability("SAUCE_ACCESS_KEY", "90d204cf-597b-4e1d-b496-6665c573692b");
+
+        remoteUrl = new URL("https://marilia.laviola:90d204cf-597b-4e1d-b496-6665c573692b@ondemand.us-west-1.saucelabs.com:443/wd/hub");
+
+        //abrir o app
+}
+    @When("^realizo a operacao com dois numeros$")
+    public void realizoAOperacaoComDoisNumeros() throws IOException {
+
+        print("Somar Dois Numeros Positivos - Passo 1 - Abriu a Calculadora");
+        MobileElement btnA = (MobileElement) driver.findElementById("com.google.android.calculator:id/digit_" + massa.num1);
+        btnA.click();
+        print("Somar Dois Numeros Positivos - Passo 2 - Clicou no botão " + massa.num1);
+
+        //Selecionar a operação matemática
+        //Exemplo com um botão para cada um das 4 operações
+        /*
+        switch(massa.operador){
+            case "+":
+                MobileElement btnSoma = (MobileElement) driver.findElementByAccessibilityId("plus");
+                btnSoma.click();
+                break;
+            case "-":
+                MobileElement btnSubtrair = (MobileElement) driver.findElementByAccessibilityId("minus");
+                btnSubtrair.click();
+                break;
+            case "*":
+                MobileElement btnMultiplicar = (MobileElement) driver.findElementByAccessibilityId("multiply");
+                btnMultiplicar.click();
+                break;
+            case "/":
+                MobileElement btnDividir = (MobileElement) driver.findElementByAccessibilityId("divide");
+                btnDividir.click();
+                break;
+        }*/
+
+        //Exemplo resumido - lê o simbolo e transforma na operação
+        switch(massa.operador){
+            case "+":
+                btnOperacao = (MobileElement) driver.findElementByAccessibilityId("plus");
+                break;
+            case "-":
+                btnOperacao = (MobileElement) driver.findElementByAccessibilityId("minus");
+                break;
+            case "*":
+                btnOperacao = (MobileElement) driver.findElementByAccessibilityId("multiply");
+                break;
+            case "/":
+                btnOperacao = (MobileElement) driver.findElementByAccessibilityId("divide");
+                break;
+        }
+        btnOperacao.click();
+
+        // Ficaria muito mais simples se a massa já tivesse a operação ao invés do simbol
+        /*
+        btnOperacao = (MobileElement) driver.findElementByAccessibilityId(massa.operador);
+        btnOperacao.click();
+        */
+
+        print("Somar Dois Numeros Positivos - Passo 3 - Clicou no botão de soma");
+        MobileElement btnB = (MobileElement) driver.findElementById("com.google.android.calculator:id/digit_" + massa.num2);
+        btnB.click();
+        print("Somar Dois Numeros Positivos - Passo 4 - Clicou no botão " + massa.num2);
+        MobileElement btnIgual = (MobileElement) driver.findElementByAccessibilityId("equals");
+        btnIgual.click();
+        print("Somar Dois Numeros Positivos - Passo 5 - Clicou no botão Igual");
+
+    }
+
+    @Then("^compara o resultado atual com o esperado$")
+    public void comparaOResultadoAtualComOEsperado() {
+        if(massa.operador == "/" && massa.num2 == "0" ){
+            //ToDo: mapear a mensagem de erro da divisão
+        }
+        else{
+            MobileElement lblResultadoAtual = (MobileElement) driver.findElementById("com.google.android.calculator:id/result_final");
+            assertEquals(massa.resultadoEsperado, lblResultadoAtual.getText());
+        }
+
     }
 }
